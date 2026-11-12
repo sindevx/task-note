@@ -12,7 +12,7 @@ Index of templates: templates.md. Links rules: templates.md, Links.
 ```
 Rows: every open task, plus done or cancelled tasks changed within BOARD_DONE_DAYS.
 Projects are listed alphabetically. The `start` column is the planned `start` field, not `started_at`.
-Under each project table, when wiki pages of that project changed within BOARD_DONE_DAYS: a line `Recent notes` and one bullet per page, `[[page]] - why it matters (YYYY-MM-DD)` (sync.md). Hub and roadmap pages are left out.
+Under each project table, when wiki pages of that project changed within BOARD_DONE_DAYS: a line `Recent notes` and one bullet per page, `[[page]] - why it matters (YYYY-MM-DD)` (sync.md). Hub and roadmap pages are left out. A project with notes but no task yet gets its heading and the Recent notes line, no table.
 Drift checks (`tn doctor`) ignore table padding and empty rows, because Obsidian re-formats tables.
 Cells: id as `[[T-0001]]`, parent as `[[T-0001]]` or empty. Titles are plain text.
 Sort: a project with a roadmap is sorted by `phase`, then `step`, then id, with one line under its heading: `Roadmap order (phase, step). Roadmap: [[<slug>-roadmap]]`. Other projects: status doing, blocked, review, todo, then done and cancelled last. Inside a status: priority (high, normal, low), then due ascending (empty last), then id.

@@ -1,19 +1,19 @@
 # Professional note writing
 
-Applies to every wiki page, task title, task Goal, and digest the skill writes.
+Applies to every wiki page, task title, task Purpose, and digest the skill writes.
 The raw file is never changed. The polished version goes in the wiki and the task. The user keeps both.
 
 ## Rules
 1. Keep every fact. Ids, numbers, names, dates, error text, commit hashes and URLs are copied exactly. Never round or translate them.
-2. Never invent. If the input does not say it, do not write it. Mark an inference as `(inferred)` and a missing fact as `(unknown)`.
+2. Never invent. If the input does not say it, do not write it. Mark an inference as `(inferred)` and a missing text fact as `(unknown)`. A step or expected result the input did not give is `(unknown)`. In date and estimate fields leave the value empty: `(unknown)` is for text only. A section whose text is unknown is kept with `(unknown)`; a section with no content at all is omitted. A step with no expected result gets `expected result: (unknown)`.
 3. Separate fact from opinion: what happened, what was decided, what is still open.
 4. Plain, short sentences. Active voice. One idea per sentence. No filler, no slang, no first-person chatter.
 5. Language: follow NOTE_LANGUAGE in config.md. Technical terms, code, API names and error strings stay in English.
 6. Same name for the same thing on every page and task (system, endpoint, project). Use the name already in the wiki.
 7. Each note says why it matters in its first line.
-8. A new fact that replaces a statement on an older page: add under that page's first line `> [!warning] Superseded YYYY-MM-DD` with the old statement, the new one, and the page that proves it. Never delete the old text. Run this in the same write as the new page.
-10. **Evidence.** A fact comes from the real code, git history, a result actually seen, or the owner's words in the conversation. A product, class, method or table name is allowed when it appears in one of those, and the real code is read before naming it. A name found nowhere is not written.
+8. A new fact that replaces a statement on the page that holds the old statement: add directly under that page's `# title` line `> [!warning] Superseded YYYY-MM-DD` with the old statement, the new one, and the page that proves it. The callout sits between the title and the `>` why line; the why line stays the first content line. Never delete the old text. Run this in the same write as the new page.
 9. No machine-speed detail in notes (minutes of work, time of day, line counts of generated files). Dates and commit hashes stay.
+10. **Evidence.** A fact comes from the real code, git history, a result actually seen, or the owner's words in the conversation. A product, class, method or table name is allowed when it appears in one of those, and the real code is read before naming it. A name found nowhere is not written.
 
 ## Human voice
 A note reads like the owner telling a teammate what happened, not like a generated report.
@@ -24,7 +24,7 @@ A note reads like the owner telling a teammate what happened, not like a generat
 - Concrete over general: a file, a method, a number, a date. "Overwrite on every login", not "improves reliability".
 - Say what went wrong, what surprised you, and what nobody knows yet.
 - Mix short and long sentences. No closing paragraph that repeats the page.
-- Short beats complete: say what we integrated or changed, what it does now, and what is unchecked, in the fewest true sentences. A task Outcome is one sentence. A dev note page is a first line, two short paragraphs, task links and source.
+- Short beats complete: say what we integrated or changed, what it does now, and what is unchecked, in the fewest true sentences. A task Outcome is one sentence. A dev note page is a first line, two short paragraphs, task links and source. The Summary of 3 to 5 lines in the layout below is for general notes (requirement, issue, decision, meeting); a dev note uses the short layout in dev-note.md.
 - Language: NOTE_LANGUAGE (config.md), now English. Names, ids and error text stay exact.
 
 ## Wiki page layout
@@ -43,7 +43,7 @@ Start with the front matter from intake.md (type, project, tags, created, update
 - YYYY-MM-DD <decision> because <reason>
 
 ## Open questions
-- <question> (owner: <who>)
+- <question> (owner: <who>, date: YYYY-MM-DD)
 
 ## Tasks
 - [[T-0001]] <title>
@@ -61,7 +61,7 @@ Omit empty sections. Append to an existing page instead of creating a near dupli
 
 ## Request
 - Asked by: <person, team or ticket> on YYYY-MM-DD
-- Source: <ticket, document name and version, R-id>
+- Source: <ticket, document name and version, `[[R-id]]` when the raw is .md, else the R-id as plain text>
 
 ## Scope
 - In: <what is included>
@@ -74,7 +74,7 @@ Omit empty sections. Append to an existing page instead of creating a near dupli
 - [ ] <check a person can verify>
 
 ## Open questions
-- <question> (owner: <who>)
+- <question> (owner: <who>, date: YYYY-MM-DD)
 
 ## Tasks
 - [[T-0001]] <title>
@@ -112,7 +112,7 @@ R-id, date, type
 A resolved issue links the dev note that fixed it. A dev note that fixes an issue links the issue page.
 
 ## Task wording
-- Title: verb + object + system, up to TITLE_MAX_CHARS. Example: `Re-apply Acme fee after pricing mapping fix`. In a project with a roadmap, start with the step number: `4.2 Design the submission tables in Oracle`, `6.3.1 Check form F1 Balance against PDF 3.1 and V3`, `8.11 Integrate form F1 Balance with Partner UAT end to end`.
+- Title: verb + object + system, up to TITLE_MAX_CHARS. Example: `Re-apply Acme fee after pricing mapping fix`. In a project with a roadmap, start with the step number: `4.2 Design the submission tables in Oracle`, `6.3 Check form F1 Balance against PDF 3.1 and V3`, `8.11 Integrate form F1 Balance with Partner UAT end to end`.
 - Write as a development team works: one unit per task, plain action words (design, build, integrate, check, test, deploy). Leave out machine-speed details (time of day, line counts of generated files); keep dates and commit hashes.
 - Purpose: one line, why it exists.
 - Not checked yet: what nobody saw (tests, environments, gaps), as plain lines.

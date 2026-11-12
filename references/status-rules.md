@@ -40,6 +40,7 @@ Moving to blocked also needs `waiting_on` (who or what). Reason says why, `waiti
 - `start`, `due`, `remind`, `estimate`, `next_action` are typed by the user. Format: DATE_FORMAT (config.md).
 - `started_at` = date of the first move to doing. Never changes after. Set by the skill only.
 - `done_at` = date of the move to done. Cleared on reopen. Set by the skill only.
+- Backfill (the owner asked, or `note done` on past commits): the skill sets `started_at` and `done_at` from the commit dates and writes two Timeline lines per step, both marked `backfill`: `- <date> todo -> doing: backfill from git ...` and `- <date> doing -> done: backfill from git ...`.
 - `start` after `due` is E-DATE-ORDER. `--yes` does not skip it.
 - Derived, never stored: days overdue (today after `due`, not done), age (today minus `created`), stale (doing and no Progress log line for STALE_DAYS), slip (`done_at` minus `due`), cycle time (`done_at` minus `started_at`).
 - Today means the date in TIMEZONE.

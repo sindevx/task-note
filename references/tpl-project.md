@@ -25,9 +25,14 @@ roadmap: "[[<slug>-roadmap]]" # roadmap and KPI page (roadmap.md), empty until `
 ```
 A manager opens this page and must see, in this order: counts and progress, what was delivered (with proof), what needs attention, then the live task table. Details of the work are one click away in the hub `[[<slug>-notes]]`.
 
-Live view: `![[project-tasks.base]]` is an Obsidian Bases file (core plugin, no community plugin) at `<store>/todo/project-tasks.base`. Views in this order: By project (tasks grouped by `project`, group header shows the count), Timeline (tasks and notes of the project, no grouping, newest `updated` first, so any column can be re-sorted), By name (tasks, no grouping, A to Z by `title`), Open (grouped by status, sorted by `due` inside each group), Roadmap (grouped by `phase`, sorted by `step`), Needs planning (open tasks with no `estimate` or `next_action`; `due` is optional because only 3 of 204 tasks had one), Done (newest first, with environment, outcome, ref). Grouped views sort only inside a group, so the two ungrouped views are the ones to use when the owner wants one order across everything. Every view except Timeline is limited to `todo/tasks`. Its filter is `(task folder or wiki folder) and (file.hasLink(this.file) or this.file.ext == "base")`: embedded in a project page it shows that project's tasks and notes; opened directly it shows every task and note, so it is never empty. Reason: `this` is the base file itself when the base is opened on its own. Every view starts with Project and ID (shown as names, not `file.name`). Formulas: `priority_rank` (high first, text sort would give high, low, normal), `days_open`, `cycle_days`. Open sorts by priority, phase, step. Numbers `phase` and `step` and the dates are typed in `.obsidian/types.json`. Create both when a project is added, if missing. Exact file: below.
+Live view: `![[project-tasks.base]]` is an Obsidian Bases file (core plugin, no community plugin) at `<store>/todo/project-tasks.base`. Views in this order: By project (tasks grouped by `project`, group header shows the count), Timeline (tasks and notes of the project, no grouping, newest `updated` first, so any column can be re-sorted), By name (tasks, no grouping, A to Z by `title`), Open (grouped by status, sorted by priority, phase, step), Roadmap (grouped by `phase`, sorted by `step`), Needs planning (open tasks with no `estimate` or `next_action`; `due` is optional because only 3 of 204 tasks had one), Done (newest first, with environment, outcome, ref). Grouped views sort only inside a group, so the two ungrouped views are the ones to use when the owner wants one order across everything. Every view except Timeline is limited to `todo/tasks`. Its filter is `(task folder or wiki folder) and (file.hasLink(this.file) or this.file.ext == "base")`: embedded in a project page it shows that project's tasks and notes; opened directly it shows every task and note, so it is never empty. Reason: `this` is the base file itself when the base is opened on its own. Every view except By project starts with Project and ID (shown as names, not `file.name`). Formulas: `priority_rank` (high first, text sort would give high, low, normal), `days_open`, `cycle_days`. Open sorts by priority, phase, step. Numbers `phase` and `step` and the dates are typed in `.obsidian/types.json`. Create both when a project is added, if missing. Exact `types.json` body (the base file follows it):
+```json
+{"types": {"phase": "number", "step": "number", "start": "date", "due": "date", "remind": "date", "environment_date": "date", "created": "date", "updated": "date"}}
+```
+Exact base file:
 
 ```yaml
+# copy verbatim into <store>/todo/project-tasks.base (everything up to the closing fence)
 filters:
   and:
     - or:
@@ -235,7 +240,7 @@ Written by the skill, only between the markers. It is plain Obsidian markdown (c
 > [!summary] 4 open · 2 done · 1 cancelled · progress 2 of 6 (33%)
 > Rebuilt YYYY-MM-DD HH:MM · op=<OP-id> · notes: [[<slug>-notes]]
 
-**Delivered**
+**Delivered** (nothing delivered yet: write `Nothing delivered yet.`)
 | Task | Done | Outcome | Ref |
 |---|---|---|---|
 | [[T-0010]] Enhance Customer Info API | 2026-10-01 | Customer Info API returns only business and savings accounts; 11 tests pass | commit#9972cc8 · [[customer-info-account-filtering]] |
@@ -245,12 +250,12 @@ Written by the skill, only between the markers. It is plain Obsidian markdown (c
 - 🟣 [[T-0012]] Verify customer-info on real core data: in review
 - ⏰ [[T-0013]] Deploy billing logging: overdue 2 days (due 2026-09-30)
 ```
-- Counts and progress: progress = done / (open + done), cancelled left out. Show `progress 0 of 0` as `no tasks yet`.
+- Counts and progress: progress = done / (open + done), cancelled left out. When the project has phases, count steps only (phase tasks excluded), matching the roadmap KPI Overall progress. Show `progress 0 of 0` as `no tasks yet`.
 - Delivered = tasks done within BOARD_DONE_DAYS, newest first. Columns: `Task | Done | Outcome | Ref`.
   - Done = `done_at`. Outcome = the task `outcome` field (required to be done, see cmd-task.md).
   - Ref = the task `ref`, then ` · ` and every link in the task `notes` list. Empty parts are left out.
   - A reader must answer "what was delivered, where is the proof" from this table alone.
-- Needs attention = blocked (with `waiting_on`), review, overdue (due before today, not done), stale (STALE_DAYS). Empty: write `Nothing blocked or overdue.`
+- Needs attention = blocked (with `waiting_on`), review, a bug with high priority, overdue (due before today, not done), stale (STALE_DAYS). Empty: write `Nothing blocked or overdue.`
 - Open tasks are not repeated here. The live Open view in the Bases table and BOARD.md show them.
 - Cancelled tasks appear only as a count. Their reason stays in the task file.
 - Overdue and stale are computed at rebuild time. The "Rebuilt" stamp tells the reader how fresh they are.

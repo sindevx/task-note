@@ -28,7 +28,7 @@ Front matter and BOARD hold wiki links (templates.md, Links). Accept user input 
 3. Create op id `OP-YYYYMMDD-HHMM-xx`.
 4. Write temp file, then rename (atomic). Never leave a half-written file.
 5. Recompute parent status. Rebuild BOARD.md and the Summary block of each project file the command touched (only between the `tn:tasks` markers, never outside). If the command wrote or changed a wiki page, update that project's hub `<slug>-notes` (templates.md) in the same step.
-5b. Read tasks, board, projects and project-tasks back and build the sync receipt (sync.md). A place that did not change when it should have is a failure: fix it first.
+5b. Read tasks, board, projects and project-tasks back and build the sync receipt (sync.md). Every Delivered row must link an existing done task; if not, stop and show the Draft for that task. A place that did not change when it should have is a failure: fix it first.
 6. Append the Timeline line (date and a plain sentence) and the log.md line. log.md and the commit message carry the op id.
 7. `git add` only the files this command changed (never `.tn.lock`, never `git add -A`), then `git commit`: `tn: <command> <ids> op=<OP-id>`. Local only. The skill never pushes the store to a remote; only the owner does, by hand.
 8. Release lock. Print brief result.

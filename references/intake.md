@@ -17,18 +17,18 @@ Claude does this by judgement. No script. Templates: templates.md (index). Wordi
 |---|---|
 | title | Verb + object + system, up to TITLE_MAX_CHARS. Exact system, form and endpoint names. Project with a roadmap (project `roadmap:` set): prefix `N.M ` (phase.step), for example `8.11 Integrate form F1 Balance with Partner UAT end to end`. One title per unit of work (one form, one table, one endpoint), never "all forms" (roadmap.md). |
 | phase / step | Project with a roadmap: phase from `--phase` or the keyword map in roadmap.md (show it), step = highest step in that phase + 1. Set parent to the phase task. No roadmap: empty. |
-| type | One of TASK_TYPES. fix, error, wrong, bug -> `bug`. add, new, support -> `feature`. config, deploy, restart, monitor, access -> `ops`. test, verify, retest, UAT -> `test`. why, check, analyse -> `investigation`. write doc, update doc -> `docs`. go-live, release, deploy to production -> `release`. cleanup, refactor, upgrade -> `chore`. |
-| priority | **high**: production or customer-visible failure; security, audit or regulatory item; hard deadline within TODAY_WINDOW_DAYS; blocks other people or teams; the user says urgent, ด่วน or ASAP. **low**: cleanup, nice to have, docs with no deadline; the user says "when free". **normal**: everything else. Say the reason in Context. |
+| type | One of TASK_TYPES. fix, error, wrong, bug -> `bug`. add, new, support, design, build, implement -> `feature`. config, deploy, restart, monitor, access -> `ops`. test, verify, retest, UAT -> `test`. why, check, analyse -> `investigation`. write doc, update doc -> `docs`. go-live, release, deploy to production -> `release`. cleanup, refactor, upgrade -> `chore`. No keyword matches: pick the closest type, mark it `(inferred)` and give the reason in What happened. |
+| priority | **high**: production or customer-visible failure; security, audit or regulatory item; hard deadline within TODAY_WINDOW_DAYS; blocks other people or teams; the user says urgent, ด่วน or ASAP. **low**: cleanup, nice to have, docs with no deadline; the user says "when free". **normal**: everything else. Say the reason in What happened. |
 | start | Only when the user states or implies it ("today", "from Monday"). Else empty = not scheduled. `started_at` is never typed. |
 | due | An explicit date, or a relative phrase converted to YYYY-MM-DD in TIMEZONE ("Friday" = the next Friday after today, unless the user said today). Show the resolved date. High priority without a date: propose one and ask. Otherwise leave empty. |
-| estimate | Leave empty unless the owner gives one or agrees to one. Propose only when asked, or when the task will be pushed to Redmine: then propose hours by the table in cmd-task.md (Estimate rule), marked `*`, and wait for the owner. |
+| estimate | Leave empty unless the owner gives one or agrees to one. Propose only when asked, or when the task will be pushed to Redmine: then propose hours by the table in cmd-task.md (Estimate rule), marked `*`, and wait for the owner. A high priority task also gets a proposed estimate marked `*` in the Draft. The push stays blocked until the owner confirms. After ok, write the estimate and keep the `(inferred)` reason in What happened. |
 | purpose | One line, first in the task: why this exists. From the owner or the real conversation. Never guessed. If unknown, ask once. |
 | what happened | Short paragraphs in plain words: who asked, what was decided and why, what was done. Every `(inferred)` value is marked with its reason. |
 | change map | For development: one line per layer actually touched (database, entity or DTO, repository, service, controller or API, config, security and logs, outside systems, tests, deploy), read from the real code. Also what was not done, and why. |
 | kind, environment | kind: code, investigation, ops or docs. environment: dev, UAT or production, the furthest place the work has reached, set from what the owner says and never guessed from branch names. |
 | not checked yet | What nobody saw: tests not run, environments not tried, gaps found in the code. Plain lines, not checkboxes, and not tasks. |
 | next_action | One concrete first step starting with a verb. |
-| requester / assignee | From the words ("asked by", "with Aiy Soubin", "for QA"). Assignee defaults to the store owner. People names exactly as typed. |
+| requester / assignee | From the words ("asked by", "with <person name>", "for QA"). Assignee defaults to the store owner. People names exactly as typed. |
 | blocked_by / waiting_on | "after X", "needs Y first" -> `blocked_by` (a task id when it exists, else the text). If the task cannot move now, status `blocked` with `waiting_on` (who or what) and a follow-up `remind` date. |
 | ref | Ticket numbers, PR numbers, commit hashes, URLs. |
 | feature built in several units | Work already built from several tickets or units: one parent task named for what was integrated (`Integrate <system> with <new service>`), plus one done sub task per unit. The parent stays `review` until the owner confirms its outcome (status-rules.md). Each Outcome says in one sentence what the system does now. |
@@ -70,7 +70,10 @@ Run when the user asks to clean up, or before a weekly review.
 3. Apply after the user approves, per task: update fields, set `updated`, add the Progress log line `groom: <fields> (op=...)`, then follow the mutation procedure.
 4. Never change `status`, `started_at`, `done_at`, or existing non-empty values without asking.
 
+A parent task of several units lists its sub task Not-checked lines under its own Not checked yet, or says `see sub tasks`.
+
 ## Example
+The table is the content of the task file. The chat Draft stays short (core.md, Draft first).
 User types: `fix customer-info missing savings account urgent by friday`, today is Wednesday 2026-10-01.
 
 | Field | Value |
@@ -80,9 +83,9 @@ User types: `fix customer-info missing savings account urgent by friday`, today 
 | priority | high* (user said urgent, due in 2 days) |
 | due | 2026-10-03 (Friday) |
 | estimate | 4h* |
-| goal | customer-info response omits the savings account. Return it so tellers see the full account list. |
-| context | Reported as urgent by the user. (inferred) priority high: urgent + due within 3 days. (inferred) estimate 4h: one endpoint fix plus tests. Environment: not stated. |
-| done_when | customer-info returns the savings account for an affected customer; unit test covers it; fix verified in UAT |
+| purpose | customer-info response omits the savings account. Return it so tellers see the full account list. |
+| what happened | Reported as urgent by the user. (inferred) priority high: urgent + due within 3 days. (inferred) estimate 4h: one endpoint fix plus tests. Environment: not stated. |
+| not checked yet | fix verified in UAT; unit test for an affected customer not run yet |
 | next_action | Reproduce with a customer that has a savings account and compare the response |
 | assignee | store owner |
 

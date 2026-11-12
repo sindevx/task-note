@@ -16,7 +16,7 @@ step:                  # step number inside the phase (0 = the phase task itself
 status: todo
 priority: normal       # high | normal | low. Rubric: intake.md
 type:                  # one of TASK_TYPES (config.md): what kind of work
-kind:                  # code | investigation | ops | docs: what the delivery is
+kind:                  # code | investigation | ops | docs, or empty: what the delivery is
 environment:           # dev | UAT | production: furthest place reached, as the owner says
 environment_date:      # date it reached that place
 tags: []               # systems, customers, modules, e.g. [acme, pricing]. Ingest adds INBOX_TAG
@@ -32,7 +32,8 @@ requester:             # who asked for it (person, team or ticket owner)
 assignee:              # who does it. Default: the store owner
 started_at:            # auto: first move to doing. Never typed by hand
 done_at:               # auto: move to done. Cleared by reopen
-ref:                   # redmine#12345, commit#abc1234, or empty
+ref:                   # redmine#12345, commit#abc1234 (several: separated by ", "), a ticket id as written (TKT-101), or empty
+applications:          # Redmine custom field `Applications`, only when the project uses it. Never taken from tags
 outcome:               # one line: what was delivered and the proof. Required to move to done
 notes: []              # wiki pages about this task: ["[[requirement-page]]", "[[dev-note-page]]"]
 source: ""             # "[[raw file]]" when it is .md, else the R-id as text
@@ -42,11 +43,14 @@ updated: YYYY-MM-DD
 ## Purpose
 <one line: why this exists>
 
+## Done when
+<only for roadmap steps (roadmap.md): the checklist chain. Other tasks leave this section out; what nobody checked goes under Not checked yet>
+
 ## What happened
 <short paragraphs in plain words: who asked, what was decided and why, what was done. Mark `(inferred)` values>
 
 ## What changed, by layer
-<development only. One line per layer actually touched: Model, Service, Repository, DB, Controller or API, Config, Security and logs, Outside systems, Tests, Deploy. Also: Not done, and why>
+<development tasks only; leave the whole section out for other tasks. One line per layer actually touched: Model, Service, Repository, DB, Controller or API, Config, Security and logs, Outside systems, Tests, Deploy. Also: Not done, and why>
 
 ## Timeline
 - YYYY-MM-DD <plain sentence of what happened>
@@ -54,7 +58,7 @@ updated: YYYY-MM-DD
 ## Not checked yet
 - <what nobody saw: tests, environments, gaps. Plain lines, not checkboxes>
 ```
-`## Timeline` is what the other reference files call the Progress log. An older task keeps its old sections (`Goal`, `Context`, `Done when`, `Progress log`); it is rewritten only by `task rewrite`.
+`## Timeline` is what the other reference files call the Progress log. `Done when` is written only for roadmap steps and exists in old (schema 1) task files. An older task keeps its old sections (`Goal`, `Context`, `Done when`, `Progress log`); it is rewritten only by `task rewrite`.
 Every new task is filled by the intake rules in intake.md. Fields stay empty only when the input and the rules give no honest value.
 Fields added after schema 2 (`phase`, `step`, `type`, `blocked_by`, `requester`, `assignee`, `outcome`, `notes`, `## Context`) are optional for old files, but required for every task moved to done (`outcome`) and for every task that has a wiki page (`notes`). A file without them stays valid.
 

@@ -4,7 +4,7 @@ Core rules: core.md. Raw type handling: formats.md.
 ## note: capture and process raw
 | Command | Effect |
 |---|---|
-| `note <input>` (no verb) **one-stop** | `input` = pasted text, pasted JSON, file path, `redmine#id`, or an issue URL. Runs `note add` then `note ingest` in one go, then prints: raw id, wiki page touched, tasks created (ids), anything redacted. Shows a Draft first (core.md); tasks are proposed in the Draft and created only after "ok". Empty input: ask once what to note. |
+| `note <input>` (no verb) **one-stop** | `input` = pasted text, pasted JSON, file path, `redmine#id`, an issue URL, or commit hash(es) in the current repo (a commit hash routes to the `note done` flow, dev-note.md). Runs `note add` then `note ingest` in one go, then prints: raw id, wiki page touched, tasks created (ids), anything redacted. Shows a Draft first (core.md); tasks are proposed in the Draft and created only after "ok". Empty input: ask once what to note. |
 | `note add <text\|path\|redmine#id> [--type auto\|text\|json\|log\|csv\|redmine\|issue\|image] [--project] [--title]` | Detect type, scan secrets, store in `raw/`, add row to `raw/INDEX.md` status `new`. Same sha256 as an existing raw: return that id, write nothing. |
 | `note list [--new] [--project] [--since 7d]` | List raw files and status. Read only. |
 | `note show <R-id>` | Type, project, size, status, wiki pages and tasks created from it. Read only. |

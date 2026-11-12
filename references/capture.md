@@ -24,11 +24,12 @@ Pick by the first matching row. A keyword prefix typed by the user (`decision:`,
 | steps, commands, "how to restart / deploy / test ..." | howto | no |
 | a link, spec, contact, API doc, number to remember | reference | no |
 | anything else | note | only if an action is clear |
+A single structured event (one JSON record or log line) with no described symptom is a `note`. It becomes an `issue` only when the owner says what went wrong.
 Page types are in the front matter of intake.md. Layouts below.
 
 ## Find before create
 1. Search `wiki/` for the topic: file names, `# title`, `tags:`, system and endpoint names (`grep -il`). Search BOARD.md for related tasks.
-2. Match found: append a dated section to that page (`## Update YYYY-MM-DD`), set `updated:`, keep one `Source` line per raw. Do not create a near duplicate.
+2. Match found: append a dated section to that page (`## Update YYYY-MM-DD`), set `updated:`, keep one `Source` line per raw. Do not create a near duplicate. If the new fact contradicts the match, create the new page and add the Superseded callout to the match instead (writing.md rule 8), then run step 3 for the new page (hub, task links). Do not append.
 3. No match: create the page, add it to the project hub once (tpl-project.md), link tasks both ways.
 4. Name the page by topic as a noun phrase, lowercase with hyphens, never equal to a project slug or task id (templates.md, Links).
 
@@ -116,4 +117,4 @@ Steps are copied from the input exactly. A step the input did not give is `(unkn
 Contacts: names and roles only unless the user gives more. No secrets (core.md).
 
 ## After writing
-Reply with the compact table (intake.md) and one line `Quality: N/10`. N counts the lifecycle.md Quality bar items that hold. Items that fail are listed under "still open", or fixed first.
+Reply with the compact table (intake.md) and one line `Quality: N/10`, for a note and for a task alike. A raw-only write (no page, no task) gives `Quality: n/a`. N counts the lifecycle.md Quality bar items that hold. Items that fail are listed under "still open", or fixed first.

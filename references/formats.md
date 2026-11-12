@@ -19,7 +19,7 @@ One table. One row per raw. Created with this header if missing:
 |---|---|---|---|---|---|---|
 ```
 - `status`: new, proposed, ingested, failed, skipped.
-- `note`: failure reason, skip reason, or `redacted: <type> x<count>`.
+- `note`: failure reason, skip reason, or `redacted: <type> x<count>`. Empty when there is none.
 - `sha256`: first 12 characters.
 
 ## Types
@@ -42,7 +42,7 @@ When the type is unclear, use `--type` if given. Otherwise ask once. Do not gues
 - text, log: replace each secret match with `[REDACTED:<type>]`.
 - json: replace the value, keep the key. Key names that always count as secret: password, passwd, secret, token, authorization, api_key, apikey, pin, cvv, card_number, account_no, accountNumber.
 - csv: replace the whole column when the header matches the list above.
-- Report to the user: type and count per kind. Never print the value.
+- Report to the user: type and count per kind, and the rotate warning from core.md (Secrets). Never print the value.
 
 ## Ingest output for any type
 1. One summary block: what it is, when, which project, 3 to 8 bullets. Write it by the rules in writing.md (professional wording, facts unchanged).

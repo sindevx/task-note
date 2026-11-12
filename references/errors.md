@@ -11,7 +11,7 @@ Example: `E-BAD-TRANSITION T-0042: status done -> doing violates transition tabl
 | E-AMBIGUOUS | id or project name matches more than one | no |
 | E-NO-PROJECT | project not given and cannot be resolved. Exception: `note` commands still store the raw with project `unassigned` (capture.md), then ask | no (`note`: raw and INDEX row only) |
 | E-BAD-TRANSITION | status change not in status-rules.md | no |
-| E-SUB-OPEN | review/done on a parent with sub tasks not done | no |
+| E-SUB-OPEN | `task done` on a parent with sub tasks not done | no |
 | E-REASON-REQUIRED | block, cancel, reopen or ignore without reason | no |
 | E-DEPTH | sub task under a sub task | no |
 | E-DUP | same title + project, still open, created within DUP_WINDOW_HOURS. Skip with `--yes` | no |
@@ -20,7 +20,7 @@ Example: `E-BAD-TRANSITION T-0042: status done -> doing violates transition tabl
 | E-SCHEMA | frontmatter missing or invalid. Name file and field | no |
 | E-INGEST-FAILED | ingest stopped midway. Raw set to `failed` with reason | yes (INDEX only) |
 | E-PARENT-STATUS | start, unblock, block or review on a task that has sub tasks (its status is computed) | no |
-| E-CONFIRM-REQUIRED | `task done` with unchecked "Done when" items. Ask the user, then repeat with `--yes` | no |
+| E-CONFIRM-REQUIRED | `task done` on a task that has a "Done when" section (old tasks, roadmap steps) with unticked items Ask the user, then repeat with `--yes` | no |
 | E-OUTCOME-REQUIRED | `task done` without an `outcome` (one line: what was delivered and the proof). Use: `task edit <id> --outcome "..."` | no |
 | E-GIT-FAILED | a git command in the store failed. Message carries git's own error | no |
 | E-DIRTY | `tn undo` while the store has uncommitted changes | no |

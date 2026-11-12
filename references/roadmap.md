@@ -22,7 +22,7 @@ Every project uses these 11 slots. Rename a phase to fit the project (keep the n
 | 10 | End-to-end and user test | test with the frontend or partner team, load test, business acceptance | business owner signs; go or no-go recorded |
 | 11 | Go live and operate | cutover, first real run, operations tasks | first real run confirmed |
 
-Phase keyword map (used by `dev log` and `task add` when no phase is given). First match wins:
+Phase keyword map (used by `dev log` and `task add` when no phase is given). First match wins. If two phases match, the earlier phase row wins; a more specific word does not override it:
 analyse, spec, document, question, requirement -> 1 · design, diagram, decision, plan -> 2 · setup, init, docker, config, makefile, CI -> 3 · db, database, table, migration, view, oracle, schema -> 4 · login, sign-in, auth, token, role, security -> 5 · form, F1..F22, rule, feature, module, calculate -> 6 · endpoint, API, controller, request, response -> 7 · partner, third-party, websocket, UAT, integrate -> 8 · log, runbook, handover, refactor, docs -> 9 · e2e, frontend, portal, load test, acceptance, joint test -> 10 · deploy, go-live, cutover, production, maintain -> 11.
 A project may override words in its project file under `## Phase words` (one line per phase: `8: partner, websocket`).
 
@@ -32,14 +32,14 @@ A project may override words in its project file under `## Phase words` (one lin
 - Task ids are history and never show order. Order comes from `phase` and `step`. A task created before the roadmap keeps its id: it gets `parent`, `phase`, `step` and a title prefix, with one Progress log line `reparent: moved under [[T-id]] as step N.M; title was '<old>'`.
 - A step that has its own sub tasks (depth limit, E-DEPTH) becomes the phase itself, or its sub tasks stay and are listed as one group step `N.M` in the roadmap page.
 - New step number = highest `step` in that phase + 1. Never renumber done steps.
-- **One step per form or feature, never one step for "all of them".** When the project has repeated units (forms, reports, endpoints, partner APIs), phase 8 gets one step per unit, titled `8.M Integrate <unit> <name> with <partner> UAT`, in the partner's order. Each has the same Done-when chain: field check done (link the phase 6 check), sample data prepared and approved by the data owner, uploaded through our API, stored data visible, sent to the partner, first reply success, final result accepted (or error fixed and resent), tracker row filled. Phase 6 gets one check step per unit, phase 10 lists every unit in its Done-when. Reason: a manager tracks each unit until it is accepted.
+- **One step per form or feature, never one step for "all of them".** When the project has repeated units (forms, reports, endpoints, partner APIs), phase 8 gets one step per unit, titled `8.M Integrate <unit> <name> with <partner> UAT`, in the partner's order. Each has the same 8-item Done-when chain: field check done (link the phase 6 check), sample data prepared and approved by the data owner, uploaded through our API, stored data visible, sent to the partner, first reply success, final result accepted (or error fixed and resent), tracker row filled. Phase 6 gets one check step per unit, phase 10 gets one step per unit, `10.M Accept <unit> ...`, and its Done-when names that unit. Reason: a manager tracks each unit until it is accepted.
 - Write steps as a development team would: verb + object + system (`Integrate form F1 Balance with Partner UAT`). Leave out machine-speed details such as time of day or line counts of generated files; dates and commit hashes stay.
 
 ## Commands
 | Command | Effect |
 |---|---|
 | `project roadmap <slug> [--from-git]` | Build the roadmap: create the phase tasks, map every existing task of the project to a phase (show the table, ask once), reparent them, and with `--from-git` backfill done steps from the repository history. Then write the roadmap page `wiki/<slug>-roadmap.md`, link it from the project page and hub, rebuild BOARD and Summary. Re-run is safe: existing phases and steps are kept, only missing ones are added. |
-| `task add <title> --phase N` | Create step `N.M` under phase N with intake.md. Without `--phase`, use the keyword map, show the chosen phase. |
+| `task add <title> --phase N` | Create step `N.M` under phase N with intake.md. Without `--phase`, use the keyword map, show the chosen phase. If phase task N does not exist: stop with E-NOT-FOUND and ask whether to run `project roadmap` first. |
 | `dev log [T-id] <text>` | Record work as it happens. See below. |
 | `report kpi [--project] [--since 30d]` | KPI report, read only. See below. |
 
@@ -48,7 +48,7 @@ Natural phrases: "log งาน", "วันนี้ทำ ...", "ทำเส�
 ## `dev log`: developer log -> task -> note in one step
 1. Resolve the project (core.md). Resolve the step: the given id; else match the text against open step titles of the project (same nouns: form name, table, endpoint, system); else the keyword map gives the phase. Exactly one match: use it. Several: show up to 3 and ask. None: propose a new step `N.M` under the phase from the keyword map (intake.md) and create it after one yes.
 2. Status: a `todo` step moves to `doing` (sets `started_at`). Words "done", "เสร็จ", "finished" propose `task done` with the outcome taken from the text; ask once if the text has no proof.
-3. Evidence: in the project repository run `git log --since=<last Progress log time of the step> --format='%h %ad %s' --date=short`. Add new hashes to `ref` (`commit#hash`). Never invent a hash or a test result.
+3. Evidence: in the project repository run `git log --since=<last Progress log time of the step; none yet: the step's `started_at`, else `created`> --format='%h %ad %s' --date=short`. Add new hashes to `ref` (`commit#hash`). Never invent a hash or a test result.
 4. Write the Progress log line `log: <text in writing.md style> (commits: ...)`.
 5. Text longer than 5 lines, or a decision, design or finding: also write or append the step's wiki page (dev note, decision or issue by capture.md) and put it in the step `notes`.
 6. Missing `estimate` on a step that just moved to doing: ask once for it (KPI needs it). Missing `due` on a high-priority step: ask once.
@@ -56,9 +56,9 @@ Natural phrases: "log งาน", "วันนี้ทำ ...", "ทำเส�
 
 ## Backfill from git (`--from-git`)
 - Group commits into steps by path or by commit scope (`feat(fdi)` -> feature fdi), one step per feature or module, never one per commit.
-- Dates: `started_at` = first commit of the group, `done_at` = last commit. Say in Context: `Backfill from git; dates are commit dates; tests not seen in this session`.
+- Dates: `started_at` = first commit of the group, `done_at` = last commit. Say in What happened: `Backfill from git; dates are commit dates; tests not seen in this session`.
 - Outcome: what the commits delivered and `N commits, first <date>, last <date>`. Ref: the first and last hash.
-- Built code is not verified code. A module that exists gets a done "build" step. Testing it in UAT or with users is a separate open step in phase 8 or 10 unless a test record exists.
+- Built code is not verified code. A module that exists gets a done "build" step. Testing it in UAT or with users is a separate open step in phase 8 or 10 unless a test record exists: each module with code gets one open `10.M Test <module> with users` step; a module with a test record gets none.
 - No estimate is written for backfilled steps. They do not count in on-time or estimate KPIs.
 - Every backfilled task gets tag `backfill`, so a view shows at once that it was recorded after the work.
 
@@ -74,8 +74,8 @@ Natural phrases: "log งาน", "วันนี้ทำ ...", "ทำเส�
 | Stale steps | doing with no Progress log line for STALE_DAYS | always |
 | Defects found late | `bug` steps created in phase 8, 10 or 11 | always |
 | Open effort | sum of `estimate` of open steps (`h` / 7.5) | say how many open steps have no estimate |
-Never show a KPI from data that is not valid for it; print `not measurable: <reason>` instead.
+Never show a KPI from data that is not valid for it. A KPI with no valid step prints `not measurable: <reason>`; otherwise show the number and how many steps were excluded (for example backfilled steps).
 
 ## Roadmap page `wiki/<slug>-roadmap.md`
-Front matter `type: note`, tags `[roadmap, kpi]`. Sections in order: How to read (phase order, ids are history, how to pick the Roadmap view), KPI snapshot (include units accepted, units checked, units tested with users), Unit tracker when the project has repeated units (Unit | Check | Integration step | Chain done | User test), Phases table (Phase | Name | Steps done | State | Started), one section per phase (developer work, output, exit check, step table: Step | Task | State | Date | Evidence), Waiting on others, Risks and not verified, Source. Generated parts (KPI snapshot, unit tracker, phases table, phase sections) sit between `<!-- tn:roadmap:start -->` and `<!-- tn:roadmap:end -->`. Every write to the project and `board rebuild` rebuild only that block from the task files; text outside the markers is written by people and never touched. Reason: counts drifted when they were written once.
+Front matter `type: note`, tags `[roadmap, kpi]`. Sections in order: How to read (phase order, ids are history, how to pick the Roadmap view), KPI snapshot (include units accepted, units checked, units tested with users), Unit tracker when the project has repeated units (Unit | Check | Integration step | Chain done | User test; Chain done = `N of 8` Done-when items seen as passed, a tick needs a seen result), Phases table (Phase | Name | Steps done | State | Started; Steps done = done steps over steps, phase task excluded; Started = earliest `started_at` of its steps, empty if none), one section per phase (developer work, output, exit check, step table: Step | Task | State | Date | Evidence), Waiting on others, Risks and not verified, Source. Generated parts (KPI snapshot, unit tracker, phases table, phase sections) sit between `<!-- tn:roadmap:start -->` and `<!-- tn:roadmap:end -->`. Every write to the project and `board rebuild` rebuild only that block from the task files; text outside the markers is written by people and never touched. Reason: counts drifted when they were written once.
 First lines of How to read: Roadmap view in Obsidian, ids are history, `backfill` tag meaning, numbers between markers are rebuilt.

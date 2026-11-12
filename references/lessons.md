@@ -10,5 +10,5 @@ Rules that earlier mistakes taught. Max 10 lines. The lesson log and personal pr
 - Work from git: read `git show <hash>` and the real code first. A class, method, table or product named in a task or note must appear in the code, the git history, a result seen, or the owner's words.
 - A hand edit of store files is not a write. Run the full mutation procedure: lock, op id, raw evidence, hub, BOARD, Summary, log.md, one `tn:` commit.
 - Show the Draft first, create no task on your own, and print the sync receipt of the four places.
-- Front matter must parse as YAML: quote text with `: `, quote `blocked_by` items. After every write, parse the touched files.
-- Do not tick a Done-when item that was not seen in this session. Split it into a verification task (lifecycle.md rule 4). A Redmine push is review, then confirm, then push, then read back (cmd-task.md).
+- Front matter must parse as YAML: quote text with `: `, quote `blocked_by` items. After every write, parse every touched task, wiki page and project file (name any file not parsed in the receipt) with `yq`, Python `yaml.safe_load` or `ruby -ryaml` (permit the Date class); if none is installed, say so in the receipt.
+- Never tick or claim a check that was not seen in this session: put it under Not checked yet and offer a verification task in the Draft. Create it only after the owner says yes. Before showing the Draft, check that each task outcome is one sentence. A Redmine push is review, then confirm, then push, then read back (cmd-task.md).

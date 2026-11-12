@@ -8,7 +8,7 @@ version: 1.0.0
 
 One central store for notes and tasks. Works from any project directory. Claude does all the work by judgement and by the references. No script is used.
 
-**Setup:** read `local.md` first if it exists (personal, git-ignored; copy `local.example.md`). It sets `STORE_PATH`, overrides any value in `config.md`, and holds the lesson log. No `local.md`: use `config.md` defaults and ask the user for the store folder once.
+**Setup:** read `local.md` first if it exists (personal, git-ignored; copy `local.example.md`). It sets `STORE_PATH`, overrides any value in `config.md`, and holds your preferences and the lesson Log. `lessons.md` holds only the shared Active checks. No `local.md`: use `config.md` defaults and ask the user for the store folder once.
 
 **Redmine push:** `task push` follows the review, confirm, push rule in `cmd-task.md`. If a companion skill `redmine-report` is installed, call it first to prepare the draft.
 
@@ -17,12 +17,12 @@ Check the folder in STORE_PATH exists first (E-STORE-MISSING if not). Read `refe
 
 | Request | Also read |
 |---|---|
-| `note <input>`, any pasted text, JSON, log, issue | `intake.md`, `cmd-note.md`, `capture.md`, `formats.md`, `writing.md`, `tpl-project.md` (hub entry), `lessons.md` (Active checks) |
+| `note <input>`, any pasted text, JSON, log, issue, commit hash | `intake.md`, `cmd-note.md`, `capture.md`, `formats.md`, `writing.md`, `tpl-project.md` (hub entry), `sync.md`, `lessons.md` (Active checks). A commit hash or finished work also loads the `development finished` row |
 | add a task or sub task | `intake.md`, `cmd-task.md`, `tpl-task.md`, `status-rules.md`, `lessons.md` (Active checks) |
 | start, block, done, log, edit, reopen, cancel | `cmd-task.md`, `status-rules.md` |
 | `task push`, `task pull`, Redmine, estimate, spent time, support case | `cmd-task.md` (Push to Redmine), `intake.md` (estimate), `tpl-task.md`, `config.md`, `lessons.md` (Active checks) |
 | what is left, today, next, list, groom | `cmd-task.md`, `intake.md` (groom) |
-| development finished, write it up | `dev-note.md`, `intake.md`, `writing.md` |
+| development finished, write it up | `dev-note.md`, `intake.md`, `writing.md`, `tpl-task.md`, `lifecycle.md`, `status-rules.md`, `sync.md`, `lessons.md` (Active checks) |
 | `project`, `wiki`, `board`, `report`, `tn doctor` | `cmd-admin.md` |
 | `dev log`, `task add --phase`, `project roadmap`, `report kpi`, phases, KPI, "log my work", "integrate form F1" | `roadmap.md`, `cmd-task.md`, `tpl-task.md`, `status-rules.md`, `lessons.md` (Active checks) |
 | requirement, issue, "what was asked / what went wrong / what was built", reports for a manager | `lifecycle.md`, `writing.md`, `tpl-project.md` |
@@ -37,7 +37,7 @@ Do not read the other files.
 **Never store only what the user typed, and never store a guess.** Every task and note passes `intake.md`. Facts come from the real code, git, results actually seen and the owner's own words. The owner sees a Draft in human voice first (`core.md`, Draft first). A write ends with the sync receipt of the four places: tasks, board, projects, project-tasks (`sync.md`). No task is created without the owner's ok.
 
 ## Hard rules
-- **Learn from "not OK" and from issues found.** When the user is unhappy with a result, or a push, check or read-back shows a problem (feedback.md signals), fix the result first, then find the cause, patch the owner reference file, log it in lessons.md, and sweep the store for the same defect. Every write command also runs the Active checks in lessons.md before replying.
+- **Learn from "not OK" and from issues found.** When the user is unhappy with a result, or a push, check or read-back shows a problem (feedback.md signals), fix the result first, then find the cause, patch the owner reference file, log it in the Log of local.md (feedback.md), and sweep the store for the same defect. Every write command also runs the Active checks in lessons.md before replying.
 - Never edit a file in `raw/` after capture.
 - Redact secrets before any write. Never print a secret value.
 - Notes are written in English (NOTE_LANGUAGE), in human voice (`writing.md`, Human voice). Chat follows the user's language.
@@ -48,7 +48,7 @@ Do not read the other files.
 - Bad input: print the error code from errors.md and write nothing.
 - Notes and task text follow writing.md: professional wording, facts exact, nothing invented.
 - Reply in the user's language. Keep ids, commands and error codes exact.
-- After a write, reply with a compact table of the final values, the ids changed, the op id, `Quality: N/10` (capture.md) and the sync receipt. No raw content.
+- After a write, reply with a compact table of the final values, the ids changed, the op id, `Quality: N/10` (lifecycle.md Quality bar) and the sync receipt. No raw content.
 
 ## Token rules
 - List and status questions: read `todo/BOARD.md` once. Open a task file only when its details are needed.
@@ -59,8 +59,9 @@ Do not read the other files.
 - Never paste raw content into the reply. Give ids and counts.
 
 ## Entry points
+- Routing: pasted text, JSON, a log or a link is `note`. A short imperative that names work ("fix X", "add X", "retest X") is `task add`. Unsure which: ask once.
 - One stop: `note <anything>` (text, JSON, file path, `redmine#id`, issue URL).
-- Work: `dev log <text>` (developer log: finds the step, logs, links commits), `task add/sub/start/log/block/done/groom`.
+- Work: `dev log <text>` (developer log: finds the step, logs, links commits), `task add` (`--parent` makes a sub task), `task start/log/block/done/groom`.
 - Plan: `project roadmap <slug> [--from-git]` (11 phases from analysis to go-live), `task add <title> --phase N`.
 - Review: `report kpi`, `task remaining`, `task next`, `task today`, `task list`, `task tree`, `task inbox`, `project status`, `report digest`, `report week`.
 - Health: `wiki lint`, `tn doctor`, `tn undo`.
